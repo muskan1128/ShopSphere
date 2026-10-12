@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Your Cart | ShopSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <nav class="navbar">
+
+        <a href="{{ url_for('home') }}" class="logo">
+            🛍️ ShopSphere
+        </a>
+
+        <div class="nav-links">
+
+            <a href="{{ url_for('home') }}">
+                Home
+            </a>
+
+            <a href="{{ url_for('shop') }}">
+                Shop
+            </a>
+
+            <a href="{{ url_for('cart') }}">
+                Cart
+            </a>
+
+        </div>
+
+        <div class="nav-actions">
+
+            <a href="{{ url_for('shop') }}"
+               class="continue-shopping">
+                ← Continue Shopping
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =========================
+         CART PAGE
+    ========================== -->
+
+    <section class="cart-page">
+
+        <div class="cart-heading">
+
+            <div>
+
+                <p class="subtitle">
+                    SHOPSPHERE
+                </p>
+
+                <h1>
+                    Your Shopping Cart 🛒
+                </h1>
+
+                {% if cart_products %}
+                    <p>
+                        Review your items before checkout.
+                    </p>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        {% if cart_products %}
+
+        <div class="cart-layout">
+
+            <!-- =========================
+                 CART ITEMS
+            ========================== -->
+
+            <div class="cart-items">
+
+                {% for item in cart_products %}
+
+                <div class="cart-item">
+
+                    <!-- PRODUCT -->
+
+                    <div class="cart-product">
+
+                       <div class="cart-image">
+    <img src="{{ url_for('static', filename='images/' + item.product.image) }}"
+         alt="{{ item.product.name }}">
+</div>
+
+                        <div class="cart-product-info">
+
+                            <span class="cart-category">
+                                {{ item.product.category }}
+                            </span>
+
+                            <h2>
+                                {{ item.product.name }}
+                            </h2>
+
+                            <p>
+                                Rs.
+                                {{ "{:,.0f}".format(item.product.price) }}
+                                each
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- QUANTITY -->
+
+                    <div class="cart-quantity">
+
+                        <span>
+                            Quantity
+                        </span>
+
+                        <div class="quantity-controls">
+
+                            <a href="{{ url_for(
+                                'decrease_cart',
+                                product_id=item.product.id
+                            ) }}">
+                                −
+                            </a>
+
+                            <strong>
+                                {{ item.quantity }}
+                            </strong>
+
+                            <a href="{{ url_for(
+                                'increase_cart',
+                                product_id=item.product.id
+                            ) }}">
+                                +
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TOTAL -->
+
+                    <div class="cart-item-total">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong>
+                            Rs.
+                            {{ "{:,.0f}".format(item.item_total) }}
+                        </strong>
+
+                    </div>
+
+
+                    <!-- REMOVE -->
+
+                    <a href="{{ url_for(
+                        'remove_from_cart',
+                        product_id=item.product.id
+                    ) }}"
+                       class="remove-btn">
+
+                        🗑️ Remove
+
+                    </a>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- =========================
+                 ORDER SUMMARY
+            ========================== -->
+
+            <aside class="cart-summary">
+
+                <h2>
+                    Order Summary
+                </h2>
+
+                <div class="summary-row">
+
+                    <span>
+                        Items
+                    </span>
+
+                    <span>
+                        {{ cart_count }}
+                    </span>
+
+                </div>
+
+                <div class="summary-row">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <strong>
+                        Rs. {{ "{:,.0f}".format(total) }}
+                    </strong>
+
+                </div>
+
+                <div class="summary-row">
+
+                    <span>
+                        Delivery
+                    </span>
+
+                    <span class="free">
+                        FREE
+                    </span>
+
+                </div>
+
+                <div class="summary-divider"></div>
+
+                <div class="summary-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong>
+                        Rs. {{ "{:,.0f}".format(total) }}
+                    </strong>
+
+                </div>
+
+                <a href="{{ url_for('checkout') }}"
+                   class="checkout-btn">
+
+                    Proceed to Checkout
+                    <span>→</span>
+
+                </a>
+
+                <p class="secure-text">
+                    🔒 Secure checkout
+                </p>
+
+            </aside>
+
+        </div>
+
+
+        {% else %}
+
+        <!-- =========================
+             EMPTY CART
+        ========================== -->
+
+        <div class="empty-cart">
+
+            <div class="empty-cart-icon">
+                🛒
+            </div>
+
+            <h2>
+                Your Cart is Empty
+            </h2>
+
+            <p>
+                Looks like you haven't added anything yet.
+                Let's find something you'll love!
+            </p>
+
+            <a href="{{ url_for('shop') }}"
+               class="shop-btn">
+
+                Start Shopping →
+
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    {% include "chatbot.html" %}
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Order Confirmed | ShopSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <a href="/" class="logo">
+            🛍️ ShopSphere
+        </a>
+
+        <div class="nav-links">
+
+            <a href="/">Home</a>
+
+            <a href="/shop">Shop</a>
+
+            <a href="/cart">Cart</a>
+
+        </div>
+
+        <div class="nav-actions">
+
+            <a href="{{ url_for('cart') }}"
+               class="nav-icon-btn">
+                🛒
+            </a>
+
+            <a href="/"
+               class="nav-icon-btn">
+                ⌂
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- SUCCESS PAGE -->
+
+    <section class="success-page">
+
+        <div class="success-card">
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+
+            <p class="checkout-label">
+                ORDER CONFIRMED
+            </p>
+
+
+            <h1>
+                Order Placed Successfully!
+            </h1>
+
+
+            <p class="success-message">
+
+                Thank you for shopping with
+                <strong>ShopSphere</strong>! 🎉
+
+                <br>
+
+                Your order has been received
+                and is being processed.
+
+            </p>
+
+
+            <!-- ORDER INFORMATION -->
+
+            <div class="order-info">
+
+                <div class="success-info-row">
+
+                    <span>Order ID</span>
+
+                    <strong>
+                        #{{ order.id }}
+                    </strong>
+
+                </div>
+
+
+                <div class="success-info-row">
+
+                    <span>Customer</span>
+
+                    <strong>
+                        {{ order.customer_name }}
+                    </strong>
+
+                </div>
+
+
+                <div class="success-info-row">
+
+                    <span>Payment</span>
+
+                    <strong>
+                        {{ order.payment_method }}
+                    </strong>
+
+                </div>
+
+
+                <div class="success-info-row">
+
+                    <span>Total</span>
+
+                    <strong>
+                        Rs. {{ "{:,.0f}".format(order.total) }}
+                    </strong>
+
+                </div>
+
+
+                <div class="success-info-row">
+
+                    <span>Status</span>
+
+                    <strong class="order-status">
+                        {{ order.status }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTION BUTTONS -->
+
+            <div class="success-actions">
+
+                <a href="{{ url_for('shop') }}"
+                   class="shop-btn">
+
+                    Continue Shopping 🛍️
+
+                </a>
+
+
+                <a href="{{ url_for('home') }}"
+                   class="home-btn">
+
+                    Back to Home
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</body>
+
+</html>

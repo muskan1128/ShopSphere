@@ -1,0 +1,197 @@
+<div id="chatbot-button" onclick="toggleChat()">
+    💬
+</div>
+
+<div id="chatbot-box">
+
+    <div id="chatbot-header">
+        <span>🤖 ShopSphere AI</span>
+        <button onclick="toggleChat()">×</button>
+    </div>
+
+    <div id="chat-messages">
+        <div class="bot-message">
+            Hi! 👋 I'm ShopSphere AI.<br>
+            What are you looking for today?
+        </div>
+    </div>
+    <div id="quick-suggestions">
+
+    <button onclick="sendQuickMessage('show me electronics')">
+        🛍️ Electronics
+    </button>
+
+    <button onclick="sendQuickMessage('something under 5000')">
+        💰 Under 5000
+    </button>
+
+    <button onclick="sendQuickMessage('show me fashion')">
+        👕 Fashion
+    </button>
+
+</div>
+
+    <div id="chat-input-area">
+
+        <input
+            type="text"
+            id="chat-input"
+            placeholder="Ask about products..."
+        >
+
+        <button onclick="sendMessage()">➤</button>
+
+    </div>
+
+</div>
+<script>
+
+function toggleChat() {
+
+    const chatbot = document.getElementById("chatbot-box");
+
+    if (chatbot.style.display === "flex") {
+        chatbot.style.display = "none";
+    } else {
+        chatbot.style.display = "flex";
+    }
+}
+function sendQuickMessage(message) {
+
+    const input = document.getElementById("chat-input");
+
+    input.value = message;
+
+    sendMessage();
+}
+
+async function sendMessage() {
+
+    const input = document.getElementById("chat-input");
+    const message = input.value.trim();
+
+    if (!message) {
+        return;
+    }
+
+    const messages = document.getElementById("chat-messages");
+
+    // User message
+    messages.innerHTML += `
+        <div class="user-message">
+            ${message}
+        </div>
+    `;
+
+    input.value = "";
+
+    try {
+        messages.innerHTML += `
+    <div class="bot-message typing-indicator" id="typing">
+        🤖 ShopSphere AI is typing...
+    </div>
+`;
+
+messages.scrollTop = messages.scrollHeight;
+
+
+        const response = await fetch("/shopping-ai", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                message: message
+            })
+
+        });
+
+        const data = await response.json();
+
+        const typing = document.getElementById("typing");
+
+if (typing) {
+    typing.remove();
+}
+        // AI reply
+        messages.innerHTML += `
+            <div class="bot-message">
+                ${data.reply}
+            </div>
+        `;
+
+
+        // Product cards
+        if (data.products && data.products.length > 0) {
+
+            data.products.forEach(product => {
+
+                messages.innerHTML += `
+
+                    <div class="ai-product-card">
+
+                        <img
+                            src="/static/images/${product.image}"
+                            alt="${product.name}"
+                        >
+
+                        <div class="ai-product-info">
+
+                            <strong>${product.name}</strong>
+
+                            <span>
+                                Rs. ${product.price}
+                            </span>
+
+                            <small>
+                                ${product.category}
+                            </small>
+
+                            <a
+                                href="/product/${product.id}"
+                                class="ai-view-product"
+                            >
+                                View Product →
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            });
+
+        }
+
+        messages.scrollTop = messages.scrollHeight;
+
+    } catch (error) {
+
+        messages.innerHTML += `
+            <div class="bot-message">
+                ❌ Something went wrong. Please try again.
+            </div>
+        `;
+
+        console.log(error);
+    }
+}
+
+
+// Enter key
+document.getElementById("chat-input").addEventListener(
+    "keypress",
+    function(event) {
+
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+
+    }
+);
+
+</script>

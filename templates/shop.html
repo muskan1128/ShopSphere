@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Shop | ShopSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <nav class="navbar">
+
+        <a href="{{ url_for('home') }}" class="logo">
+            🛍️ ShopSphere
+        </a>
+
+        <div class="nav-links">
+
+            <a href="{{ url_for('home') }}">
+                Home
+            </a>
+
+            <a href="{{ url_for('shop') }}">
+                Shop
+            </a>
+
+            <a href="{{ url_for('shop') }}">
+                Categories
+            </a>
+
+            <a href="{{ url_for('home') }}#features">
+                About
+            </a>
+
+        </div>
+
+        <div class="nav-actions">
+
+            <button class="nav-icon" onclick="openSearch()">
+                🔍
+            </button>
+
+            <a href="{{ url_for('cart') }}"
+               class="nav-icon cart-link">
+
+                🛒
+
+                {% if cart_count > 0 %}
+                    <span class="cart-badge">
+                        {{ cart_count }}
+                    </span>
+                {% endif %}
+
+            </a>
+
+            <button class="nav-icon" onclick="openChatbot()">
+                🤖
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =========================
+         SHOP HEADER
+    ========================== -->
+
+    <section class="shop-header">
+
+        <div>
+
+            <p class="subtitle">
+                SHOPSPHERE STORE
+            </p>
+
+            <h1>
+                Explore Our Products
+            </h1>
+
+            <p>
+                Discover products selected for smarter shopping.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+    ========================== -->
+         PRODUCTS
+
+    <main>
+
+        {% if products %}
+
+        <section class="products-container">
+
+            {% for product in products %}
+
+            <div class="product-card">
+
+                <!-- PRODUCT IMAGE -->
+
+                <div class="product-image">
+    <img src="{{ url_for('static', filename='images/' + product.image) }}"
+         alt="{{ product.name }}">
+</div>
+
+
+                <!-- PRODUCT INFO -->
+
+                <div class="product-info">
+
+                    <p class="product-category">
+                        {{ product.category }}
+                    </p>
+
+                    <h2>
+                        {{ product.name }}
+                    </h2>
+
+                    <p class="product-description">
+                        {{ product.description }}
+                    </p>
+
+
+                    <div class="product-bottom">
+
+                        <span class="price">
+                            Rs. {{ "{:,.0f}".format(product.price) }}
+                        </span>
+
+                        <a href="{{ url_for('product_detail', product_id=product.id) }}"
+                           class="cart-btn">
+
+                            View Details →
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </section>
+
+        {% else %}
+
+        <!-- EMPTY SHOP -->
+
+        <section class="empty-shop">
+
+            <div class="empty-icon">
+                🛍️
+            </div>
+
+            <h2>
+                No Products Available
+            </h2>
+
+            <p>
+                We couldn't find any products right now.
+            </p>
+
+            <a href="{{ url_for('home') }}"
+               class="shop-btn">
+
+                ← Back Home
+
+            </a>
+
+        </section>
+
+        {% endif %}
+
+    </main>
+
+
+    <!-- =========================
+         SEARCH POPUP
+    ========================== -->
+
+    <div id="search-box" class="search-box">
+
+        <div class="search-content">
+
+            <button class="close-search"
+                    onclick="closeSearch()">
+
+                ✕
+
+            </button>
+
+            <h2>
+                Search ShopSphere
+            </h2>
+
+            <form action="{{ url_for('shop') }}"
+                  method="GET">
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search products..."
+                    required
+                >
+
+                <button type="submit">
+                    Search
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         CHATBOT
+    ========================== -->
+
+    {% include "chatbot.html" %}
+
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+
+</html>

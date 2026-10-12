@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Checkout | ShopSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <a href="/" class="logo">
+            🛍️ ShopSphere
+        </a>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/shop">Shop</a>
+            <a href="/cart">Cart</a>
+        </div>
+
+        <div class="nav-actions">
+            <a href="{{ url_for('cart') }}" class="nav-icon-btn">🛒</a>
+            <a href="/" class="nav-icon-btn">⌂</a>
+        </div>
+
+    </nav>
+
+
+    <!-- CHECKOUT -->
+
+    <section class="checkout-page">
+
+        <div class="checkout-container">
+
+            <!-- CUSTOMER INFORMATION -->
+
+            <div class="checkout-form">
+
+                <div class="checkout-title">
+
+                    <p class="checkout-label">
+                        SECURE CHECKOUT
+                    </p>
+
+                    <h1>Complete Your Order</h1>
+
+                    <p class="checkout-subtitle">
+                        Enter your details below to place your order.
+                    </p>
+
+                </div>
+
+
+                <form method="POST"
+                      action="{{ url_for('checkout') }}">
+
+                    <label>Full Name</label>
+
+                    <input
+                        type="text"
+                        name="customer_name"
+                        placeholder="Enter your full name"
+                        required>
+
+
+                    <label>Email Address</label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        required>
+
+
+                    <label>Phone Number</label>
+
+                    <input
+                        type="tel"
+                        name="phone"
+                        placeholder="03XX-XXXXXXX"
+                        required>
+
+
+                    <label>Delivery Address</label>
+
+                    <textarea
+                        name="address"
+                        placeholder="Enter your complete address"
+                        rows="4"
+                        required></textarea>
+
+
+                    <label>City</label>
+
+                    <input
+                        type="text"
+                        name="city"
+                        placeholder="Karachi"
+                        required>
+
+
+                    <label>Payment Method</label>
+
+                    <select name="payment_method" required>
+
+                        <option value="" disabled selected>
+                            Select payment method
+                        </option>
+
+                        <option value="Cash on Delivery">
+                            💵 Cash on Delivery
+                        </option>
+
+                        <option value="Bank Transfer">
+                            🏦 Bank Transfer
+                        </option>
+
+                    </select>
+
+
+                    <button
+                        type="submit"
+                        class="place-order-btn">
+
+                        Place Order 🎉
+
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- ORDER SUMMARY -->
+
+            <div class="order-summary">
+
+                <h2>Order Summary 🛍️</h2>
+
+
+                {% for item in cart_products %}
+
+                <div class="summary-item">
+
+                    <div>
+
+                        <strong>
+                            {{ item.product.name }}
+                        </strong>
+
+                        <p>
+                            Quantity: {{ item.quantity }}
+                        </p>
+
+                    </div>
+
+                    <span>
+                        Rs. {{ "{:,.0f}".format(item.item_total) }}
+                    </span>
+
+                </div>
+
+                {% endfor %}
+
+
+                <div class="summary-total">
+
+                    <span>Total</span>
+
+                    <strong>
+                        Rs. {{ "{:,.0f}".format(total) }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+</body>
+
+</html>

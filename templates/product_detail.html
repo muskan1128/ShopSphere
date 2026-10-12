@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ product.name }} | ShopSphere</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <nav class="navbar">
+
+        <a href="{{ url_for('home') }}" class="logo">
+            🛍️ ShopSphere
+        </a>
+
+        <div class="nav-links">
+
+            <a href="{{ url_for('home') }}">
+                Home
+            </a>
+
+            <a href="{{ url_for('shop') }}">
+                Shop
+            </a>
+
+            <a href="{{ url_for('shop') }}">
+                Categories
+            </a>
+
+            <a href="{{ url_for('home') }}#features">
+                About
+            </a>
+
+        </div>
+
+        <div class="nav-actions">
+
+            <button class="nav-icon" onclick="openSearch()">
+                🔍
+            </button>
+
+            <a href="{{ url_for('cart') }}"
+               class="nav-icon cart-link">
+
+                🛒
+
+                {% if cart_count > 0 %}
+                    <span class="cart-badge">
+                        {{ cart_count }}
+                    </span>
+                {% endif %}
+
+            </a>
+
+            <button class="nav-icon" onclick="openChatbot()">
+                🤖
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =========================
+         BREADCRUMB
+    ========================== -->
+
+    <div class="breadcrumb">
+
+        <a href="{{ url_for('home') }}">
+            Home
+        </a>
+
+        <span>›</span>
+
+        <a href="{{ url_for('shop') }}">
+            Shop
+        </a>
+
+        <span>›</span>
+
+        <span>{{ product.name }}</span>
+
+    </div>
+
+
+    <!-- =========================
+         PRODUCT DETAIL
+    ========================== -->
+
+    <section class="product-detail">
+
+        <!-- IMAGE -->
+
+        <div class="detail-image">
+
+            <div class="detail-image">
+    <img src="{{ url_for('static', filename='images/' + product.image) }}"
+         alt="{{ product.name }}">
+</div>
+
+            <span class="image-label">
+                ShopSphere
+            </span>
+
+        </div>
+
+
+        <!-- PRODUCT INFO -->
+
+        <div class="detail-info">
+
+            <span class="detail-category">
+                {{ product.category }}
+            </span>
+
+            <h1>
+                {{ product.name }}
+            </h1>
+
+            <div class="rating">
+                ⭐⭐⭐⭐⭐
+                <span>Highly Rated</span>
+            </div>
+
+            <p class="detail-price">
+                Rs. {{ "{:,.0f}".format(product.price) }}
+            </p>
+
+            <p class="detail-description">
+                {{ product.description }}
+            </p>
+
+
+            <!-- STOCK -->
+
+            {% if product.stock > 0 %}
+
+                <div class="stock available">
+                    <span>●</span>
+                    In Stock
+                    <small>
+                        {{ product.stock }} available
+                    </small>
+                </div>
+
+            {% else %}
+
+                <div class="stock unavailable">
+                    <span>●</span>
+                    Out of Stock
+                </div>
+
+            {% endif %}
+
+
+            <!-- QUANTITY -->
+
+            {% if product.stock > 0 %}
+
+            <div class="quantity">
+
+                <label>
+                    Quantity
+                </label>
+
+                <div class="quantity-input">
+
+                    <button type="button"
+                            onclick="decreaseQuantity()">
+                        −
+                    </button>
+
+                    <input
+                        type="number"
+                        id="quantity"
+                        value="1"
+                        min="1"
+                        max="{{ product.stock }}"
+                        readonly
+                    >
+
+                    <button type="button"
+                            onclick="increaseQuantity()">
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="detail-actions">
+
+                <a href="{{ url_for('add_to_cart', product_id=product.id) }}"
+                   class="add-cart-large">
+
+                    🛒 Add to Cart
+
+                </a>
+
+                <a href="{{ url_for('cart') }}"
+                   class="view-cart-btn">
+
+                    View Cart
+
+                </a>
+
+            </div>
+
+            {% else %}
+
+                <button class="add-cart-large" disabled>
+                    Out of Stock
+                </button>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         AI RECOMMENDATIONS
+    ========================== -->
+
+    {% if recommendations %}
+
+    <section class="recommendations">
+
+        <div class="recommendation-heading">
+
+            <p>🤖 AI POWERED</p>
+
+            <h2>
+                You May Also Like
+            </h2>
+
+            <span>
+                Smart recommendations based on this product
+            </span>
+
+        </div>
+
+
+        <div class="recommendation-grid">
+
+            {% for item in recommendations %}
+
+            <div class="recommendation-card">
+
+                <div class="recommendation-image">
+    <img src="{{ url_for('static', filename='images/' + item.image) }}"
+         alt="{{ item.name }}">
+</div>
+                <div class="recommendation-info">
+
+                    <p class="product-category">
+                        {{ item.category }}
+                    </p>
+
+                    <h3>
+                        {{ item.name }}
+                    </h3>
+
+                    <p class="recommendation-price">
+                        Rs. {{ "{:,.0f}".format(item.price) }}
+                    </p>
+
+                    <a href="{{ url_for('product_detail',
+                                       product_id=item.id) }}"
+                       class="recommendation-btn">
+
+                        View Product →
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- =========================
+         SEARCH POPUP
+    ========================== -->
+
+    <div id="search-box" class="search-box">
+
+        <div class="search-content">
+
+            <button class="close-search"
+                    onclick="closeSearch()">
+
+                ✕
+
+            </button>
+
+            <h2>
+                Search ShopSphere
+            </h2>
+
+            <form action="{{ url_for('shop') }}"
+                  method="GET">
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search products..."
+                    required
+                >
+
+                <button type="submit">
+                    Search
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- CHATBOT -->
+
+    {% include "chatbot.html" %}
+
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+
+    <!-- QUANTITY SCRIPT -->
+
+    <script>
+
+        function increaseQuantity() {
+
+            const input = document.getElementById("quantity");
+
+            const max = parseInt(input.max);
+
+            let value = parseInt(input.value);
+
+            if (value < max) {
+                input.value = value + 1;
+            }
+
+        }
+
+
+        function decreaseQuantity() {
+
+            const input = document.getElementById("quantity");
+
+            let value = parseInt(input.value);
+
+            if (value > 1) {
+                input.value = value - 1;
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>
